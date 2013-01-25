@@ -74,8 +74,10 @@ public:
     nsXPCClassInfo *GetXPCClassInfo()
     {
         if (!mXPCClassInfo) {
-            if (mIsNode)
-                mXPCClassInfo = static_cast<nsINode*>(GetCanonical())->GetClassInfo();
+            nsXPCClassInfo *xpcClassInfo;
+            if (mIsNode &&
+                (xpcClassInfo = static_cast<nsINode*>(GetCanonical())->GetClassInfo()))
+                mXPCClassInfo = xpcClassInfo;
             else
                 CallQueryInterface(mObject, getter_AddRefs(mXPCClassInfo));
         }

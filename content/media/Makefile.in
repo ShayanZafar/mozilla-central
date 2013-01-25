@@ -88,6 +88,10 @@ ifdef MOZ_WEBM
 PARALLEL_DIRS += webm
 endif
 
+ifdef MOZ_WEBVTT
+PARALLEL_DIRS += webvtt
+endif
+
 ifdef MOZ_GSTREAMER
 PARALLEL_DIRS += gstreamer
 endif

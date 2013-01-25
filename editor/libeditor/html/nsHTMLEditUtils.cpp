@@ -751,6 +751,9 @@ static const nsElementInfo kElements[eHTMLTag_userdefined] = {
   ELEM(thead, true, false, GROUP_NONE, GROUP_TBODY_CONTENT),
   ELEM(title, true, false, GROUP_HEAD_CONTENT, GROUP_LEAF),
   ELEM(tr, true, false, GROUP_TBODY_CONTENT, GROUP_TR_CONTENT),
+#if defined(MOZ_MEDIA)
+  ELEM(track, false, false, GROUP_NONE, GROUP_NONE),
+#endif
   ELEM(tt, true, true, GROUP_FONTSTYLE, GROUP_INLINE_ELEMENT),
   ELEM(u, true, true, GROUP_FONTSTYLE, GROUP_INLINE_ELEMENT),
   // XXX Can contain self and ol because editor does sublists illegally.

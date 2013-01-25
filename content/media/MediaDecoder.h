@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-Each video element based on MediaDecoder has a state machine to manage
+Each media element based on MediaDecoder has a state machine to manage
 its play state and keep the current frame up to date. All state machines
 share time in a single shared thread. Each decoder also has one thread
 dedicated to decoding audio and video data. This thread is shutdown when
@@ -19,7 +19,7 @@ decoding operations and A/V sync.
 
 Each state machine runs on the shared state machine thread. Every time some
 action is required for a state machine, it is scheduled to run on the shared
-the state machine thread. The state machine runs one "cycle" on the state
+state machine thread. The state machine runs one "cycle" on the state
 machine thread, and then returns. If necessary, it will schedule itself to
 run again in future. While running this cycle, it must not block the
 thread, as other state machines' events may need to run. State shared
@@ -138,8 +138,8 @@ player SHUTDOWN  decoder SHUTDOWN
 
 The general sequence of events is:
 
-1) The video element calls Load on MediaDecoder. This creates the
-   state machine and starts the channel for downloading the
+1) The media element calls Load on nsMediaDecoder. This creates
+   the state machine and starts the channel for downloading the
    file. It instantiates and schedules the MediaDecoderStateMachine. The
    high level LOADING state is entered, which results in the decode
    thread being created and starting to decode metadata. These are

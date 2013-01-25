@@ -209,6 +209,12 @@ SHARED_LIBRARY_LIBS += \
   $(NULL)
 endif
 
+ifdef MOZ_WEBVTT
+SHARED_LIBRARY_LIBS	+= \
+	$(DEPTH)/media/webvtt/$(LIB_PREFIX)webvtt.$(LIB_SUFFIX) \
+	$(NULL)
+endif
+
 ifeq (gonk,$(MOZ_WIDGET_TOOLKIT))
 INCLUDES	+= \
 		-I$(srcdir)/../../base/src \

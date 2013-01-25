@@ -132,7 +132,12 @@ CPPSRCS		+= \
 		nsMediaFragmentURIParser.cpp \
 		nsHTMLSourceElement.cpp \
 		nsTimeRanges.cpp \
+		HTMLTrackElement.cpp \
 		nsHTMLVideoElement.cpp \
+		$(NULL)
+
+EXPORTS_mozilla/dom += \
+		HTMLTrackElement.h \
 		$(NULL)
 endif
 

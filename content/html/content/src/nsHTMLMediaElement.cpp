@@ -106,6 +106,9 @@
 #ifdef MOZ_WMF
 #include "WMFDecoder.h"
 #endif
+#ifdef MOZ_WEBVTT
+#include "nsWebVTTDecoder.h"
+#endif
 
 #ifdef PR_LOGGING
 static PRLogModuleInfo* gMediaElementLog;
@@ -3409,6 +3412,25 @@ void nsHTMLMediaElement::FireTimeUpdate(bool aPeriodic)
     mFragmentEnd = -1.0;
     mFragmentStart = -1.0;
     mDecoder->SetFragmentEndTime(mFragmentEnd);
+  }
+
+  // HACK: update current text track cue from here
+  nsIFrame* frame = GetPrimaryFrame();
+  if (frame && frame->GetType() == nsGkAtoms::HTMLVideoFrame) {
+    nsIContent *overlay = static_cast<nsVideoFrame*>(frame)->GetCaptionOverlay();
+    long mstime = time * 1e3;
+    webvtt_cue *cue = mCues;
+    while (cue) {
+      if (cue->start < mstime && cue->end > mstime)
+        break;
+      cue = cue->next;
+    }
+    const char *text = cue ? cue->text : "";
+    nsCOMPtr<nsIDOMHTMLElement> div = do_QueryInterface(overlay);
+    char timestring[1024] = "mollis non commodo et";
+    snprintf(timestring, 1024, "<p>Cue update %lf</p>\n"
+        "<p>%s</p>\n", time, text);
+    div->SetInnerHTML(NS_ConvertUTF8toUTF16(timestring));
   }
 }
 
