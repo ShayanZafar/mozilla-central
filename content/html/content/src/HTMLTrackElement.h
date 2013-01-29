@@ -14,6 +14,7 @@
 #include "nsIHttpChannel.h"
 #include "nsGkAtoms.h"
 #include "mozilla/dom/TextTrack.h"
+#include "WebVTTLoadListener.h"
 
 namespace mozilla {
 namespace dom {
@@ -118,10 +119,10 @@ protected:
   virtual JSObject* WrapNode(JSContext *aCx, JSObject *aScope,
                              bool *aTriedToWrap) MOZ_OVERRIDE;
 
-  class LoadListener;
   PRUint32 mCurrentLoadID;
   nsCOMPtr<nsIChannel> mChannel;
   nsCOMPtr<nsIContent> mMediaParent;
+  nsRefPtr<WebVTTLoadListener> mWebVTTLoadListener;
   uint16_t mReadyState;
   bool mDefault;
 
