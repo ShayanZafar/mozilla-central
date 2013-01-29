@@ -14,6 +14,7 @@
 #include "nsIHttpChannel.h"
 #include "nsGkAtoms.h"
 #include "mozilla/dom/TextTrack.h"
+#include "WebVTTParser.h"
 
 namespace mozilla {
 namespace dom {
@@ -124,6 +125,7 @@ protected:
   nsCOMPtr<nsIContent> mMediaParent;
   uint16_t mReadyState;
   bool mDefault;
+  nsRefPtr<WebVTTLoadListener> mWebVTTLoadListener;
 
   nsresult NewURIFromString(const nsAutoString& aURISpec, nsIURI** aURI);
   nsresult LoadResource(nsIURI* aURI);
