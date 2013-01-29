@@ -57,5 +57,3 @@ private:
 
 } // namespace dom
 } // namespace mozilla
-
-#endif // mozilla_dom_WEBVTTLoadListner_h

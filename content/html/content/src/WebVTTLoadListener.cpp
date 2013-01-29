@@ -8,6 +8,14 @@
 #include "mozilla/dom/TextTrackCue.h"
 #include "mozilla/dom/TextTrackCueList.h"
 
+#ifdef PR_LOGGING
+#warning enabling nspr logging
+static PRLogModuleInfo* gTrackElementLog;
+#define LOG(type, msg) PR_LOG(gTrackElementLog, type, msg)
+#else
+#define LOG(type, msg)
+#endif
+
 namespace mozilla {
 namespace dom {
 
@@ -38,26 +46,6 @@ void WebVTTLoadListener::parsedCue(void *userData, webvtt_cue *cue)
   // TODO: Add to text track list here
   // TODO: Possibly create separate functions to create the DOM elements
   //       then this function passes those off to the HTMLTrackElement.
-
-  /*
-   * Original code from OnDataAvailable as reference.
-   * I don't think we'll be using this code as the structure of our solution has changed
-   * quite a bit since this was written.
-   *
-
-  // poke the cues into the parent object
-  nsHTMLMediaElement* parent =
-    static_cast<nsHTMLMediaElement*>(mElement->mMediaParent.get());
-  parent->mCues = cue;
-
-  // Get the parent media element's frame
-  nsIFrame* frame = mElement->mMediaParent->GetPrimaryFrame();
-  if (frame && frame->GetType() == nsGkAtoms::HTMLVideoFrame) {
-    nsIContent *overlay = static_cast<nsVideoFrame*>(frame)->GetCaptionOverlay();
-    nsCOMPtr<nsIDOMHTMLElement> div = do_QueryInterface(overlay);
-    div->SetInnerHTML(NS_ConvertUTF8toUTF16(cue->text));
-  }
-  */
 }
 
 void WebVTTLoadListener::reportError(void *userData, uint32_t line, uint32_t col,
@@ -142,7 +130,7 @@ WebVTTLoadListener::OnDataAvailable(nsIRequest* aRequest,
       // TODO: Handle error
     }
 
-    free(buf);
+    free(buffer);
   }
 
   return NS_OK;
@@ -163,7 +151,6 @@ WebVTTLoadListener::GetInterface(const nsIID &aIID,
 {
   return QueryInterface(aIID, aResult);
 }
-
 
 } // namespace dom
 } // namespace mozilla
