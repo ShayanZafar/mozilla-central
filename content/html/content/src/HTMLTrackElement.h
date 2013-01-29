@@ -125,8 +125,7 @@ protected:
   nsRefPtr<WebVTTLoadListener> mWebVTTLoadListener;
   uint16_t mReadyState;
   bool mDefault;
-  nsRefPtr<WebVTTLoadListener> mWebVTTLoadListener;
-
+  
   nsresult NewURIFromString(const nsAutoString& aURISpec, nsIURI** aURI);
   nsresult LoadResource(nsIURI* aURI);
 };
@@ -135,3 +134,4 @@ protected:
 } // namespace mozilla
 
 #endif // mozilla_dom_HTMLTrackElement_h
+

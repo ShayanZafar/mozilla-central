@@ -246,3 +246,4 @@ HTMLTrackElement::BindToTree(nsIDocument *aDocument,
 
 } // namespace dom
 } // namespace mozilla
+

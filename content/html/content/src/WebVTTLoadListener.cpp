@@ -154,3 +154,4 @@ WebVTTLoadListener::GetInterface(const nsIID &aIID,
 
 } // namespace dom
 } // namespace mozilla
+
