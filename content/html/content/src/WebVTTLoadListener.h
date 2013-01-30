@@ -27,6 +27,8 @@ class WEBVTTLoadListener MOZ_FINAL : public nsIStreamListener,
   NS_DECL_NSIINTERFACEREQUESTOR
 
 public:
+
+  nsresult WebVTTLoadListener_init();
   WebVTTLoadListener(HTMLTrackElement *aElement);
   ~WebVTTLoadListener();
   NS_IMETHODIMP Observe(nsISupports* aSubject, const char *aTopic,
@@ -59,4 +61,3 @@ private:
 } // namespace mozilla
 
 #endif // mozilla_dom_WEBVTTLoadListner_h
-

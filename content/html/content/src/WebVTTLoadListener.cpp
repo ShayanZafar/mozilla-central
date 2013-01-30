@@ -35,6 +35,19 @@ WebVTTLoadListener(HTMLTrackElement *aElement)
     // TODO: Error here?
   }
 }
+nsresult
+WebVTTLoadListener::WebVTTLoadListener_init(){
+	mParser = nullptr;
+	 // TODO: Should we use webvtt_status or just check for success == 1?
+  if (!webvtt_create_parser(&parsedCue, &reportError, this, &mParser))_
+  {
+
+      return NS_OK;
+  }else{
+	  // TODO: throw some sort of error and fail safely.
+	  return NS_OK;
+  }
+}
 
 WebVTTLoadListener::~WebVTTLoadListener()
 {
