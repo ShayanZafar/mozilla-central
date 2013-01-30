@@ -4,22 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "WEBVTTLoadListener.h"
-#include "mozilla/dom/TextTrack.h"
-#include "mozilla/dom/TextTrackCue.h"
-#include "mozilla/dom/TextTrackCueList.h"
-
-#ifdef PR_LOGGING
-#warning enabling nspr logging
-static PRLogModuleInfo* gTrackElementLog;
-#define LOG(type, msg) PR_LOG(gTrackElementLog, type, msg)
-#else
-#define LOG(type, msg)
-#endif
+#include "TextTrack.h"
+#include "TextTrackCue.h"
+#include "TextTrackCueList.h"
 
 namespace mozilla {
 namespace dom {
 
-NS_IMPL_ISUPPORTS5(WEBVTTLoadListener, nsIRequestObserver,
+NS_IMPL_ISUPPORTS5(WebVTTLoadListener, nsIRequestObserver,
                    nsIStreamListener, nsIChannelEventSink,
                    nsIInterfaceRequestor, nsIObserver)
 
@@ -30,7 +22,7 @@ WebVTTLoadListener(HTMLTrackElement *aElement)
   NS_ABORT_IF_FALSE(mElement, "Must pass an element to the callback");
 
   // TODO: Should we use webvtt_status or just check for success == 1?
-  if (!webvtt_create_parser(&parsedCue, &reportError, this, &mParser))_
+  if (!webvtt_create_parser(&parsedCue, &reportError, this, &mParser))
   {
     // TODO: Error here?
   }
@@ -41,17 +33,63 @@ WebVTTLoadListener::~WebVTTLoadListener()
   webvtt_delete_parser(mParser);
 }
 
-void WebVTTLoadListener::parsedCue(void *userData, webvtt_cue *cue) 
+void 
+WebVTTLoadListener::parsedCue(void *userData, webvtt_cue *cue) 
 {
-  // TODO: Add to text track list here
-  // TODO: Possibly create separate functions to create the DOM elements
-  //       then this function passes those off to the HTMLTrackElement.
+  TextTrackCue domCue = cCuetoDomCue(cue);
+
+  mElement.Track.addCue(domCue);
 }
 
-void WebVTTLoadListener::reportError(void *userData, uint32_t line, uint32_t col,
-                                     webvtt_error error)
+void 
+WebVTTLoadListener::reportError(void *userData, uint32_t line, uint32_t col,
+                                webvtt_error error)
 {
   // TODO: Handle error here
+}
+
+TextTrackCue 
+WebVTTLoadListener::cCuetoDomCue(webvtt_cue *cue)
+{
+  // TODO: Have to figure out what the constructor is here. aNodeInfo??
+  TextTrackCue cue(/* nsISupports *aGlobal here */);
+  DocumentFragment documentFragment;
+
+  cue.Init(cue.from, cue.until, NS_ConvertUTF8toUTF16(cue->id.d->text), /* ErrorResult &rv */);
+
+  // TODO: Initialize all these with data from the cue. 
+  //       a lot of these take strings or integers and in the cue they
+  //       are stored as enum's so we need to translate that.
+  cue.SetPauseOnExit();
+  cue.SetVertical();
+  cue.SetSnapToLines();
+  cue.SetPosition();
+  cue.SetSize();
+  cue.SetAlign();
+
+  documentFragment = cNodeListToDomFragment(cue->head);
+
+  cue.SetDocumentFragment(documentFragment);
+
+  return cue;
+}
+
+DocumentFragment 
+WebVTTLoadListener::cNodeListToDomFragment(webvtt_node *node)
+{
+  // TODO: Create Document Fragment and add a list of HtmlElements from
+  //       the node's child to the document's children.
+}
+
+HtmlElement
+WebVTTLoadListener::cNodeToHtmlElement(webvtt_node *node)
+{
+  // TODO: Create an HtmlElement here. It seems like HtmlElement is just an interface
+  //       and we are going to have to create one of the  concrete implementations like
+  //       HtmlBodyElement or Font element depeneding on what type of node it is.
+  //    
+  //       Then we need to loop though all of node's children and recursively or iteratively 
+  //       add it to the HtmlElement's children.
 }
 
 NS_IMETHODIMP
