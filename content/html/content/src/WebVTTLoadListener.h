@@ -45,16 +45,18 @@ public:
                                        nsIAsyncVerifyRedirectCallback* cb);
   NS_IMETHODIMP GetInterface(const nsIID &aIID, void **aResult);
 
-protected:
-  void parsedCue(void *userData, webvtt_cue *cue);
-  void reportError(void *userData, uint32_t line, 
-                   uint32_t col, webvtt_error error);
-
 private:
   nsRefPtr<HTMLTrackElement> mElement;
   nsCOMPtr<nsIStreamListener> mNextListener;
   uint32_t mLoadID;
   webvtt_parser mParser;
+
+  void parsedCue(void *userData, webvtt_cue *cue);
+  void reportError(void *userData, uint32_t line, 
+                   uint32_t col, webvtt_error error);
+  TextTrackCue cCuetoDomCue(webvtt_cue cue);
+  DocumentFragment cNodeListToDomFragment(webvtt_node *node);
+  HtmlElement cNodeToHtmlElement(webvtt_node *node);
 };
 
 } // namespace dom
