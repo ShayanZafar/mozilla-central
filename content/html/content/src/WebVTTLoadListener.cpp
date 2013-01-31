@@ -88,10 +88,15 @@ WebVTTLoadListener::cCuetoDomCue(webvtt_cue *cue)
 }
 
 DocumentFragment 
-WebVTTLoadListener::cNodeListToDomFragment(webvtt_node *node)
+WebVTTLoadListener::cNodeListToDomFragment(const webvtt_node anode)
 {
   // TODO: Create Document Fragment and add a list of HtmlElements from
   //       the node's child to the document's children.
+
+	DocumentFragment documentFragment = nullptr;
+
+	
+
 }
 
 HtmlElement
