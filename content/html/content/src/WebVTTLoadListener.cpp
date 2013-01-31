@@ -66,7 +66,6 @@ WebVTTLoadListener::cCuetoDomCue(const webvtt_cue aCue)
 {
   // TODO: Have to figure out what the constructor is here. aNodeInfo??
   TextTrackCue domCue(/* nsISupports *aGlobal here */);
-  DocumentFragment documentFragment;
 
   domeCue.Init(aCue.from, aCue.until, NS_ConvertUTF8toUTF16(aCue->id.d->text), /* ErrorResult &rv */);
   
@@ -80,12 +79,6 @@ WebVTTLoadListener::cCuetoDomCue(const webvtt_cue aCue)
 
   // Not specified in webvtt so we may not need this.
   domCue.SetPauseOnExit();
-
-  documentFragment = cNodeListToDomFragment(aCue.head);
-
-  // Not actually a method yet on the TextTrackCue class yet.
-  // Have to ask dale about it.
-  domCue.SetDocumentFragment(documentFragment);
 
   return domCue;
 }
