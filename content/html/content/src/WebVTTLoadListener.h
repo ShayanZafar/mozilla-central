@@ -49,12 +49,13 @@ private:
   uint32_t mLoadID;
   webvtt_parser mParser;
 
-  void parsedCue(void *userData, webvtt_cue *cue);
-  void reportError(void *userData, uint32_t line, 
-                   uint32_t col, webvtt_error error);
-  TextTrackCue cCuetoDomCue(webvtt_cue cue);
-  DocumentFragment cNodeListToDomFragment(webvtt_node *node);
-  HtmlElement cNodeToHtmlElement(webvtt_node *node);
+  void parsedCue(void *aUserData, webvtt_cue *aCue);
+  void reportError(void *aUserData, uint32_t aLine, 
+                   uint32_t aCol, webvtt_error aError);
+
+  TextTrackCue cCuetoDomCue(const webvtt_cue aCue);
+  DocumentFragment cNodeListToDomFragment(const webvtt_node aNode);
+  HtmlElement cNodeToHtmlElement(const webvtt_node aNode);
 };
 
 } // namespace dom

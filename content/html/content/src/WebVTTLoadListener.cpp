@@ -34,55 +34,80 @@ WebVTTLoadListener::~WebVTTLoadListener()
 }
 
 void 
-WebVTTLoadListener::parsedCue(void *userData, webvtt_cue *cue) 
+WebVTTLoadListener::parsedCue(void *aUserData, webvtt_cue *aCue) 
 {
-  TextTrackCue domCue = cCuetoDomCue(cue);
+  TextTrackCue domCue = cCuetoDomCue(*aCue);
+  DocumentFragment documentFragment = cNodeListToDomFragment(aCue->head);
 
   mElement.Track.addCue(domCue);
+
+  nsHTMLMediaElement* parent =
+      static_cast<nsHTMLMediaElement*>(mElement->mMediaParent.get());
+
+  nsIFrame* frame = mElement->mMediaParent->GetPrimaryFrame();
+  if (frame && frame->GetType() == nsGkAtoms::HTMLVideoFrame) {
+    nsIContent *overlay = static_cast<nsVideoFrame*>(frame)->GetCaptionOverlay();
+    nsCOMPtr<nsIDOMHTMLElement> div = do_QueryInterface(overlay);
+
+    // TODO: Not sure if this is correct yet
+    div->SetInnerHTML(documentFragment);
+  }
 }
 
 void 
-WebVTTLoadListener::reportError(void *userData, uint32_t line, uint32_t col,
-                                webvtt_error error)
+WebVTTLoadListener::reportError(void *aUserData, uint32_t aLine, uint32_t aCol,
+                                webvtt_error aError)
 {
   // TODO: Handle error here
 }
 
 TextTrackCue 
-WebVTTLoadListener::cCuetoDomCue(webvtt_cue *cue)
+WebVTTLoadListener::cCuetoDomCue(const webvtt_cue aCue)
 {
   // TODO: Have to figure out what the constructor is here. aNodeInfo??
-  TextTrackCue cue(/* nsISupports *aGlobal here */);
+  TextTrackCue domCue(/* nsISupports *aGlobal here */);
   DocumentFragment documentFragment;
 
-  cue.Init(cue.from, cue.until, NS_ConvertUTF8toUTF16(cue->id.d->text), /* ErrorResult &rv */);
+  domeCue.Init(aCue.from, aCue.until, NS_ConvertUTF8toUTF16(aCue->id.d->text), /* ErrorResult &rv */);
+  
+  domCue.SetSnapToLines(aCue.snap_to_lines);
+  domCue.SetSize(aCue.settings.size);
+  domCue.SetPosition(aCue.settings.position);
+  
+  // TODO: Accept nsAString but webvtt_cue represents as an enum - have to figure this out.
+  domCue.SetVertical();
+  domCue.SetAlign();
 
-  // TODO: Initialize all these with data from the cue. 
-  //       a lot of these take strings or integers and in the cue they
-  //       are stored as enum's so we need to translate that.
-  cue.SetPauseOnExit();
-  cue.SetVertical();
-  cue.SetSnapToLines();
-  cue.SetPosition();
-  cue.SetSize();
-  cue.SetAlign();
+  // Not specified in webvtt so we may not need this.
+  domCue.SetPauseOnExit();
 
-  documentFragment = cNodeListToDomFragment(cue->head);
+  documentFragment = cNodeListToDomFragment(aCue.head);
 
-  cue.SetDocumentFragment(documentFragment);
+  // Not actually a method yet on the TextTrackCue class yet.
+  // Have to ask dale about it.
+  domCue.SetDocumentFragment(documentFragment);
 
-  return cue;
+  return domCue;
 }
 
 DocumentFragment 
-WebVTTLoadListener::cNodeListToDomFragment(webvtt_node *node)
+WebVTTLoadListener::cNodeListToDomFragment(const webvtt_node aNode)
 {
-  // TODO: Create Document Fragment and add a list of HtmlElements from
-  //       the node's child to the document's children.
+  // TODO: Initialize document fragment here
+  DocumentFragment documentFragment;
+  HtmlElement htmlElement;
+
+  for (int i = 0; i < aNode.data->internal_data.length; i++)
+  {
+    htmlElement = cNodeToHtmlElement(aNode.data->internal_data.children[i]);
+    documentFragment.appendChild(htmlElement);
+  }
+
+  return documentFragment;
 }
 
 HtmlElement
-WebVTTLoadListener::cNodeToHtmlElement(webvtt_node *node)
+WebVTTLoadListener::cNodeToHtmlElement(const webvtt_node aNode)
 {
   // TODO: Create an HtmlElement here. It seems like HtmlElement is just an interface
   //       and we are going to have to create one of the  concrete implementations like
